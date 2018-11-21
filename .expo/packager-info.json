@@ -1,0 +1,9 @@
+{
+  "expoServerPort": 19000,
+  "expoServerNgrokUrl": "https://xb-z8h.tinesaenen.countr.exp.direct",
+  "packagerNgrokUrl": "https://packager.xb-z8h.tinesaenen.countr.exp.direct",
+  "ngrokPid": 25178,
+  "packagerPort": 19001,
+  "packagerPid": 25164,
+  "devToolsPort": 19002
+}
