@@ -38,7 +38,6 @@ export default class ListScreen extends React.Component {
       onAddLocation: this._onAddLocation.bind(this)
     });
     const locations = await DataStore.getLocations();
-    console.log(locations);
     this.setState({ locations });
   }
 
@@ -80,7 +79,10 @@ export default class ListScreen extends React.Component {
   }
 
   _onSelectLocation(location) {
-    this.props.navigation.navigate("Detail", { location });
+    this.props.navigation.navigate("Detail", {
+      locationKey: location.key,
+      locationTitle: location.title
+    });
   }
 }
 

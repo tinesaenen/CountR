@@ -1,5 +1,6 @@
 import * as React from "react";
 import {
+  ActivityIndicator,
   Text,
   View,
   StyleSheet,
@@ -35,21 +36,29 @@ export default class DetailScreen extends React.Component {
     };
   };
 
-  constructor(props) {
-    super(props);
-    const location = this.props.navigation.getParam("location");
-    this.state = { location, itemModal: 1 };
-  }
+  state = { isLoading: true, location: null, itemModal: 1 };
 
-  componentDidMount() {
+  async componentDidMount() {
+    const locationKey = this.props.navigation.getParam("locationKey");
+    const locationTitle = this.props.navigation.getParam("locationTitle");
     this.props.navigation.setParams({
-      title: this.state.location.title,
+      title: locationTitle,
       onSettings: this._onSettings.bind(this)
     });
+    const location = await DataStore.getLocation(locationKey);
+    this.setState({ location, isLoading: false });
   }
 
   render() {
-    const location = this.state.location;
+    const { location, isLoading } = this.state;
+    if (isLoading) {
+      return (
+        <View style={styles.container}>
+          <ActivityIndicator />
+        </View>
+      );
+    }
+
     const items = itemsToArray(location.items);
     return (
       <View style={styles.container}>
@@ -64,15 +73,15 @@ export default class DetailScreen extends React.Component {
     );
   }
 
-  _renderItem({ item, index }) {
+  _renderItem({ item }) {
     return (
-      <View style={styles.item} key={index}>
+      <View style={styles.item} key={item.key}>
         <View style={styles.titleWrap}>
           <Text style={styles.title}>{item.title}</Text>
         </View>
         <TouchableOpacity
-          onPress={this._onIncreaseCount.bind(this, item, index)}
-          onLongPress={this._onChangeCount.bind(this, item, index)}
+          onPress={this._onIncreaseCount.bind(this, item)}
+          onLongPress={this._onChangeCount.bind(this, item)}
           style={styles.buttonWrap}
         >
           <View style={styles.button}>
@@ -114,14 +123,18 @@ export default class DetailScreen extends React.Component {
     console.log("onSettings");
   }
 
-  _onIncreaseCount(item, index) {
-    // const location = DataStore.increaseCount(this.state.location.key, index);
-    // this.setState({ location });
+  async _onIncreaseCount(item) {
+    const location = await DataStore.increaseCount(
+      this.state.location.key,
+      item
+    );
+    console.log(location);
+    this.setState({ location });
   }
 
-  _onChangeCount(item, index) {
+  _onChangeCount(item) {
     console.log("on change count");
-    this.setState({ modalItem: item, modalIndex: index });
+    this.setState({ modalItem: item });
   }
 
   _onChangeModalValue(value) {

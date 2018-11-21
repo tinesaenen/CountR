@@ -2,8 +2,8 @@
   "expoServerPort": 19000,
   "expoServerNgrokUrl": "https://xb-z8h.fdb.countr.exp.direct",
   "packagerNgrokUrl": "https://packager.xb-z8h.fdb.countr.exp.direct",
-  "ngrokPid": 32730,
+  "ngrokPid": 33492,
   "packagerPort": 19004,
-  "packagerPid": 32709,
+  "packagerPid": 33472,
   "devToolsPort": 19003
 }

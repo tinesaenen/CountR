@@ -47,18 +47,22 @@ export default class DataStore {
 
   static async getLocations() {
     const db = firebase.database();
-    const locations = await db.ref("/locations").once("value");
+    const locations = await db.ref("locations").once("value");
     return locations;
   }
 
-  static increaseCount(locationKey, itemIndex) {
-    const locationIndex = DataStore.data.findIndex(
-      location => location.key === locationKey
-    );
-    const location = _deepClone(DataStore.data[locationIndex]);
-    location.items[itemIndex].count += 1;
-    DataStore.data[locationIndex] = location;
-    return location;
+  static async getLocation(key) {
+    const db = firebase.database();
+    const dbKey = `locations/${key}`;
+    const location = await db.ref(dbKey).once("value");
+    return Object.assign({ key }, location.val());
+  }
+
+  static async increaseCount(locationKey, item) {
+    const db = firebase.database();
+    const dbKey = `locations/${locationKey}/items/${item.key}`;
+    await db.ref(dbKey).update({ count: item.count + 1 });
+    return await this.getLocation(locationKey);
   }
 
   static setCount(locationKey, itemIndex, newCount) {
